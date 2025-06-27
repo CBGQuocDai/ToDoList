@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: ToDoList
+  datasource:
+    url: '${HOST}'
+    password: ${DB_PASSWORD}
+    username: ${DB_USER}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
