@@ -10,4 +10,4 @@ spring:
       ddl-auto: update
     show-sql: true
 jwt:
-  signer-key: ${SIGNER_KEY}
+  secret: ${SIGNER_KEY}

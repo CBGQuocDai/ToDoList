@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    UN_AUTHORIZED("Unauthorized", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1001,"Unauthorized", HttpStatus.UNAUTHORIZED),
+    BAD_REQUEST(1002,"Bad Request", HttpStatus.BAD_REQUEST),
     ;
-
+    private final int code ;
     private final String message;
     private final HttpStatus httpStatus;
-    ErrorCode (String message, HttpStatus http) {
+    ErrorCode (int code ,String message, HttpStatus http) {
+        this.code = code;
         this.message = message;
         this.httpStatus = http;
     }
