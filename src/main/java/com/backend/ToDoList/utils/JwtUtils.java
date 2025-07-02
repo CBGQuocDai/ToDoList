@@ -16,18 +16,18 @@ public class JwtUtils {
     public  JwtUtils(@Value("${jwt.secret}") String secret ) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
-    public String generateToken(int userId) {
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
+                .setSubject(email)
                 .setId(UUID.randomUUID().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + EXPIRATION_TIME))
                 .signWith(this.secretKey)
                 .compact();
     }
-    public int getUserIdFormToken(String token) {
-        return Integer.parseInt(Jwts.parserBuilder().setSigningKey(this.secretKey).build()
-                .parseClaimsJws(token).getBody().getSubject());
+    public String getEmailFormToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(this.secretKey).build()
+                .parseClaimsJws(token).getBody().getSubject();
     }
     public boolean validateToken(String token) {
         try {
