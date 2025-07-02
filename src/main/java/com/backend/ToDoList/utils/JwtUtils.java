@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.UUID;
 
+
 @Component
 public class JwtUtils {
 
@@ -29,6 +30,11 @@ public class JwtUtils {
         return Jwts.parserBuilder().setSigningKey(this.secretKey).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
+    public Claims getContent(String token) {
+        return Jwts.parserBuilder().setSigningKey(this.secretKey).build()
+                .parseClaimsJws(token).getBody();
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(this.secretKey).build().parseClaimsJws(token);

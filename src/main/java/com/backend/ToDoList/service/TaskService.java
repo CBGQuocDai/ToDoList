@@ -10,6 +10,7 @@ import com.backend.ToDoList.mapper.TaskMapper;
 import com.backend.ToDoList.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -59,6 +60,7 @@ public class TaskService {
             taskRepository.delete(task);
         }
     }
+
     public List<TaskResponse> getListTasks(int page, int limit) {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication auth = context.getAuthentication();

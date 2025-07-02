@@ -4,12 +4,14 @@ import com.backend.ToDoList.errors.AppException;
 import com.backend.ToDoList.errors.ErrorCode;
 import com.backend.ToDoList.service.UserService;
 import com.backend.ToDoList.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +29,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userDetailsService;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -36,7 +40,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             if(jwt != null && jwt.startsWith("Bearer ")) {
                 jwt = jwt.substring(7);
                 if(jwtUtils.validateToken(jwt)) {
+                    Claims body =jwtUtils.getContent(jwt);
                     String email = String.valueOf(jwtUtils.getEmailFormToken(jwt));
+                    if (redisTemplate.hasKey(body.getId())) {
+                        throw new AppException(ErrorCode.UNAUTHORIZED);
+                    }
                     UserDetails u =  userDetailsService.loadUserByUsername(email);
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken
                             (u, null, u.getAuthorities());
