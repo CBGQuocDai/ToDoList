@@ -25,13 +25,16 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,AuthTokenFilter authTokenFilter) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(e ->
                         e.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        auth.requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
                                 .anyRequest().authenticated()
                 );
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);

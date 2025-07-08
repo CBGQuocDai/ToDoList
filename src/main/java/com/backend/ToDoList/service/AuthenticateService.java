@@ -11,6 +11,7 @@ import com.backend.ToDoList.repository.UserRepository;
 import com.backend.ToDoList.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,26 +35,28 @@ public class AuthenticateService  {
         User u = null;
         try {
             u = userRepository.getByEmail(req.getEmail());
+            if(passwordEncoder.matches(req.getPassword(), u.getPassword())) {
+                return TokenResponse.builder().token(jwtUtils.generateToken(u.getEmail())).build();
+            }
+            else{
+                throw new AppException(ErrorCode.LOGIN_FAILED);
+            }
         }
         catch (Exception e) {
-            throw new RuntimeException();
-        }
-        if(passwordEncoder.matches(req.getPassword(), u.getPassword())) {
-            return TokenResponse.builder().token(jwtUtils.generateToken(u.getEmail())).build();
-        }
-        else{
             throw new AppException(ErrorCode.LOGIN_FAILED);
         }
+
+
     }
     public TokenResponse handleRegister(RegisterRequest req) {
         User u = userMapper.toUser(req);
-        log.info(String.valueOf(userRepository.findByEmail(u.getEmail()) !=null));
+//        log.info(String.valueOf(userRepository.findByEmail(u.getEmail()) !=null));
         if(userRepository.findByEmail(u.getEmail()) !=null) {
             throw new AppException(ErrorCode.EMAIL_EXISTS);
         }
         User user = userRepository.save(u);
         String token = jwtUtils.generateToken(user.getEmail());
-        log.info(token);
+//        log.info(token);
         return TokenResponse.builder().token(token).build();
     }
 
