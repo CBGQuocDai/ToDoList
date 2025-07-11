@@ -1,7 +1,7 @@
 package com.backend.ToDoList.config;
 
 
-import com.backend.ToDoList.dto.response.ApiResponse;
+import com.backend.ToDoList.dto.response.BaseResponse;
 import com.backend.ToDoList.errors.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -21,12 +21,12 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
         response.setStatus(errorCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        ApiResponse<?> apiResponse = ApiResponse.builder()
+        BaseResponse<?> baseResponse = BaseResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
         ObjectMapper objectMapper = new ObjectMapper();
-        response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
+        response.getWriter().write(objectMapper.writeValueAsString(baseResponse));
         response.flushBuffer();
     }
 }
