@@ -1,3 +1,4 @@
+link requirements: https://roadmap.sh/projects/todo-list-api
 # Set up project 
 - config project:
   - information account Mysql and redis
@@ -34,6 +35,7 @@ language_tabs:
 Base URLs:
 
 # Authentication
+- use jwt 
 
 # user-controller
 
