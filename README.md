@@ -1,3 +1,11 @@
+# Set up project 
+- config project:
+  - information account Mysql and redis
+  - value of jwt secret
+- run command: 
+  ```
+  mvn sringboost:run
+  ```
 # TODO LIST API DOCUMENT
 
 ---
